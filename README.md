@@ -1,2 +1,87 @@
-# ai-coding-guidelines
-终极 AI 编码规范脚手架：一份 Markdown 规则，自动编译适配 Cursor、Windsurf、Copilot 等主流 AI 工具，并作为支持 Skills 的全 Agent / AI Coding IDE 的参考架构项目。
+# 🤖 AI-Coding-Guidelines (AI 编码规范脚手架)
+
+> **一处维护，全端同步。** 这是一个为开发者设计的 AI 编码规范底层架构，旨在解决多 IDE 环境下规则散乱、难以同步的痛点。
+
+---
+
+### **🚀 为什么需要它？**
+
+在使用 Cursor、Windsurf 或 Trae 开发时，你是否遇到过：
+
+- **规则碎片化**：在 Cursor 调教好的 Rules，换到其他工具又得手动维护一遍。
+- **AI 幻觉**：缺乏结构化指令约束，AI 编写的代码不符合项目工程规范。
+- **维护地狱**：项目规范更新后，需逐个修改 `.cursorrules`、`.clauderules` 等配置文件。
+
+**本项目提供了一套 “Single Source of Truth” 方案。** 通过中心化管理 `.agents` 目录，利用自动化脚本将核心工程思想瞬间下发至所有 AI IDE，确保 AI 协作始终如一。
+
+---
+
+## ✨ 项目特性
+
+- **Single Source of Truth**：仅在 `.agents` 目录维护一套规则，通过脚本物理同步，解决软链接在 Git 或 Windows 环境下的不稳定性。
+- **架构先行**：基于 **SDD + MCP + Rules + Skills** 的现代化 AI 编程落地方案。
+- **跨工具兼容**：一键适配 Cursor, Claude, Trae, Windsurf 等主流 AI 编程环境。
+- **灵活插拔**：按需组合规则与技能，即插即用，轻松集成至现有项目。
+
+---
+
+## 🏗️ 核心架构
+
+本项目致力于建立一套标准化的 AI 编码协作工作流。详细设计请参考 👉 [《前端 AI Coding 落地指南（一）架构篇》](https://wuxingxi.top/)
+
+| 架构组成   | 核心功能 | 详细说明                                                                      |
+| :--------- | :------- | :---------------------------------------------------------------------------- |
+| **SDD**    | 流程控制 | 保证需求不遗漏，开发不脱节。涵盖：需求分析 / 开发规划 / 验收测试 / 复盘归档。 |
+| **MCP**    | 外部赋能 | 对接外部能力，如：读取设计稿、访问页面查看效果、解析接口文档等。              |
+| **Rules**  | 边界约束 | 约定「做什么、不做什么」。约束 AI 遵循项目结构、命名规范与代码风格。          |
+| **Skills** | 技能教导 | 约定「怎么做」。通过渐进披露，指导 AI 完成特定任务（如 UI 验收、单元测试）。  |
+
+---
+
+## 📂 项目结构
+
+采用单一数据源理念，通过脚本驱动配置分发：
+
+```text
+项目根目录/
+├── .agents/                    # 🎯 核心规范目录 (唯一事实来源)
+│   ├── rules/                  # 基础规则配置 (Markdown/JSON)
+│   └── skills/                 # 特定任务技能配置 (Markdown)
+│
+├── scripts/                    # ⚙️ 自动化工具
+│   └── sync-rules.js           # 同步脚本：将 .agents 自动分发至各 IDE 目录
+│
+├── .cursor/                    # Cursor 配置目录（脚本自动分发，无需手动修改）
+├── .claude/                    # Claude 配置目录（同上）
+├── .trae/                      # Trae 配置目录（同上）
+└── .windsurf/                  # Windsurf 配置目录（同上）
+```
+
+---
+
+## 🚀 快速开始
+
+### 1. 初始化项目
+```bash
+npm install
+```
+> `npm install` 会自动触发 `postinstall` 钩子，执行 `scripts/sync-rules.js` 脚本。
+
+### 2. 手动同步规则
+如果你修改了 `.agents/` 目录下的规则，可以手动运行：
+```bash
+node scripts/sync-rules.js
+```
+
+### 3. IDE 适配说明
+脚本会自动识别当前终端所属的 IDE 环境并进行差异化同步：
+- **Cursor**: 同步至 `.cursor/rules/`，后缀自动转换为 `.mdc`。
+- **Windsurf**: 同步至 `.windsurf/rules/`，保持 `.md` 后缀。
+- **Trae**: 同步至 `.trae/rules/`，保持 `.md` 后缀。
+
+---
+
+## 🛠️ 开发者指南
+
+- **唯一事实来源**: 所有的规则修改必须在 `.agents/` 目录下进行。
+- **Git 规范**: 只有 `.agents/` 目录会被提交到 Git。各 IDE 的配置目录（如 `.cursor/`）已加入 `.gitignore`，确保团队成员始终通过脚本获取最新规则。
